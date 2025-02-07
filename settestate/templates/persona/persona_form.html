@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Editar{% else %}Crear{% endif %} Persona{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-center">{% if object %}Editar{% else %}Crear{% endif %} Persona</h1>
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_documento" class="form-label fw-bold">Documento</label>
+                            {{ form.documento }}
+                            {% if form.documento.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.documento.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_fecha_nacimiento" class="form-label fw-bold">Fecha de Nacimiento</label>
+                            {{ form.fecha_nacimiento }}
+                            {% if form.fecha_nacimiento.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.fecha_nacimiento.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_nombre" class="form-label fw-bold">Nombre</label>
+                            {{ form.nombre }}
+                            {% if form.nombre.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.nombre.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_apellido" class="form-label fw-bold">Apellido</label>
+                            {{ form.apellido }}
+                            {% if form.apellido.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.apellido.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="id_direccion" class="form-label fw-bold">Dirección</label>
+                    {{ form.direccion }}
+                    {% if form.direccion.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.direccion.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="id_ciudad" class="form-label fw-bold">Ciudad</label>
+                            {{ form.ciudad }}
+                            {% if form.ciudad.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.ciudad.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="id_provincia" class="form-label fw-bold">Provincia</label>
+                            {{ form.provincia }}
+                            {% if form.provincia.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.provincia.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="id_pais" class="form-label fw-bold">País</label>
+                            {{ form.pais }}
+                            {% if form.pais.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.pais.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_telefono" class="form-label fw-bold">Teléfono</label>
+                            {{ form.telefono }}
+                            {% if form.telefono.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.telefono.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label fw-bold">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="mt-4 text-center">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+            <a href="{% url 'persona_list' %}" class="btn btn-secondary btn-lg">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Estilos personalizados -->
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+    }
+    .form-control {
+        border-radius: 5px;
+        padding: 10px;
+    }
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
+    }
+    .btn-lg {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+    }
+    .invalid-feedback {
+        display: block;
+        margin-top: 5px;
+        color: #dc3545; /* Color rojo para errores */
+    }
+    .is-invalid {
+        border-color: #dc3545; /* Borde rojo para campos inválidos */
+    }
+</style>
+
+<!-- Script para manejar la validación -->
+<script>
+    // Agrega la clase 'is-invalid' a los campos con errores
+    document.addEventListener("DOMContentLoaded", function() {
+        const fields = document.querySelectorAll(".form-control");
+        fields.forEach(field => {
+            if (field.classList.contains("is-invalid")) {
+                field.classList.add("is-invalid");
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalles de Propiedad{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Detalles de Propiedad</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ propiedad.nombre }}</h5>
+            <p class="card-text">{{ propiedad.descripcion }}</p>
+            <p class="card-text"><strong>Tipo:</strong> {{ propiedad.tipo }}</p>
+            <p class="card-text"><strong>Transacción:</strong> {{ propiedad.alquiler_venta }}</p>
+            <p class="card-text"><strong>Precio:</strong> ${{ propiedad.precio }}</p>
+            <a href="{% url 'propiedad_update' propiedad.pk %}" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a href="{% url 'propiedad_delete' propiedad.pk %}" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Eliminar
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
