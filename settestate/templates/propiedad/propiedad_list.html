@@ -27,7 +27,7 @@
                     <td>{{ propiedad.alquiler_venta }}</td>
                     <td>${{ propiedad.precio }}</td>
                     <td>
-                        <a href="{% url 'propiedad_update' propiedad.pk %}" class="btn btn-sm btn-warning">
+                        <a href="{% url 'propiedad_editar' propiedad.pk %}" class="btn btn-sm btn-warning">
                             <i class="fas fa-edit"></i> Editar
                         </a>
                         <a href="{% url 'propiedad_delete' propiedad.pk %}" class="btn btn-sm btn-danger">

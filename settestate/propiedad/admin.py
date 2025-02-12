@@ -1,6 +1,4 @@
 from django.contrib import admin
-from .models import Propiedad, Atributo, ValorAtributo
+from .models import Propiedad
 
 admin.site.register(Propiedad)
-admin.site.register(Atributo)
-admin.site.register(ValorAtributo)

@@ -1,7 +1,11 @@
+from django.forms import inlineformset_factory
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
-from .models import Propiedad, Atributo, ValorAtributo
-from .forms import PropiedadForm, AtributoForm, ValorAtributoForm
+from .models import Propiedad
+from .forms import PropiedadForm
+from imagen.models import ImagenPropiedad
 
 # Vistas para Propiedad
 class PropiedadListView(ListView):
@@ -30,30 +34,45 @@ class PropiedadDetailView(DetailView):
     model = Propiedad
     template_name = 'propiedad/propiedad_detail.html'
 
-# Vistas para Atributo
-class AtributoCreateView(CreateView):
-    model = Atributo
-    form_class = AtributoForm
-    template_name = 'propiedad/atributo_form.html'
-    success_url = reverse_lazy('propiedad_list')
+# Vistas para ImagenPropiedad
 
-class AtributoDeleteView(DeleteView):
-    model = Atributo
-    template_name = 'propiedad/atributo_confirm_delete.html'
-    success_url = reverse_lazy('propiedad_list')
+ImagenFormSet = inlineformset_factory(Propiedad, ImagenPropiedad, fields=('imagen',), extra=3)
 
-# Vistas para ValorAtributo
-class ValorAtributoCreateView(CreateView):
-    model = ValorAtributo
-    form_class = ValorAtributoForm
-    template_name = 'propiedad/valoratributo_form.html'
-    success_url = reverse_lazy('propiedad_list')
+def crear_propiedad(request):
+    if request.method == 'POST':
+        form = PropiedadForm(request.POST)
+        if form.is_valid():
+            propiedad = form.save()
+            formset = ImagenFormSet(request.POST, request.FILES, instance=propiedad)
+            if formset.is_valid():
+                formset.save()
+                messages.success(request, 'Propiedad creada exitosamente.')
+                return redirect('propiedad_list')
+    else:
+        form = PropiedadForm()
+        formset = ImagenFormSet()
+    
+    return render(request, 'propiedad/propiedad_form.html', {
+        'form': form,
+        'formset': formset
+    })
 
-    def form_valid(self, form):
-        form.instance.propiedad_id = self.kwargs['propiedad_id']
-        return super().form_valid(form)
-
-class ValorAtributoDeleteView(DeleteView):
-    model = ValorAtributo
-    template_name = 'propiedad/valoratributo_confirm_delete.html'
-    success_url = reverse_lazy('propiedad_list')
+def editar_propiedad(request, pk):
+    propiedad = Propiedad.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = PropiedadForm(request.POST, instance=propiedad)
+        if form.is_valid():
+            propiedad = form.save()
+            formset = ImagenFormSet(request.POST, request.FILES, instance=propiedad)
+            if formset.is_valid():
+                formset.save()
+                messages.success(request, 'Propiedad actualizada exitosamente.')
+                return redirect('propiedad_list')
+    else:
+        form = PropiedadForm(instance=propiedad)
+        formset = ImagenFormSet(instance=propiedad)
+    
+    return render(request, 'propiedad/propiedad_form.html', {
+        'form': form,
+        'formset': formset
+    })

@@ -1,8 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from .models import Propiedad, Atributo, ValorAtributo
-from imagen.models import ImagenPropiedad
+from .models import Propiedad
 
 class PropiedadForm(forms.ModelForm):
     class Meta:
@@ -19,18 +18,3 @@ class PropiedadForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Guardar'))
-
-class ImagenPropiedadForm(forms.ModelForm):
-    class Meta:
-        model = ImagenPropiedad
-        fields = ['imagen', 'portada']
-
-class AtributoForm(forms.ModelForm):
-    class Meta:
-        model = Atributo
-        fields = '__all__'
-
-class ValorAtributoForm(forms.ModelForm):
-    class Meta:
-        model = ValorAtributo
-        fields = ['atributo', 'valor']

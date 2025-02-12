@@ -1,23 +1,167 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}{% if object %}Editar{% else %}Crear{% endif %} Propiedad{% endblock %}
-
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4">{% if object %}Editar{% else %}Crear{% endif %} Propiedad</h1>
-    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
-        {% csrf_token %}
-        {{ form|crispy }}
-
-        <div class="d-flex gap-2 mt-3">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Guardar
-            </button>
-            <a href="{% url 'propiedad_list' %}" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">{% if form.instance.pk %}Editar{% else %}Nueva{% endif %} Propiedad</h3>
+                </div>
+                
+                <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    {# Formulario principal de la propiedad #}
+                    {% crispy form %}
+                    
+                    {# Sección de imágenes #}
+                    <div class="card-body border-top">
+                        <h4 class="mb-3">Imágenes de la Propiedad</h4>
+                        
+                        {{ formset.management_form }}
+                        <div id="imagenes-container">
+                            {% for imagen_form in formset %}
+                                <div class="imagen-form bg-light p-3 rounded mb-3">
+                                    {% crispy imagen_form %}
+                                    
+                                    {% if imagen_form.instance.pk %}
+                                        <div class="preview-container mb-2">
+                                            <img src="{{ imagen_form.instance.imagen.url }}" 
+                                                 class="img-thumbnail" 
+                                                 style="max-height: 150px;">
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="form-check">
+                                        {{ imagen_form.DELETE }}
+                                        <label class="form-check-label text-danger">
+                                            Eliminar imagen
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <button type="button" 
+                                class="btn btn-outline-primary" 
+                                id="add-imagen">
+                            <i class="fas fa-plus"></i> Agregar Imagen
+                        </button>
+                    </div>
+                    
+                    <div class="card-footer bg-light">
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'propiedad_list' %}" 
+                               class="btn btn-secondary">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if form.instance.pk %}
+                                    Actualizar Propiedad
+                                {% else %}
+                                    Crear Propiedad
+                                {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
+
+{% block extra_css %}
+<style>
+    .imagen-form-container {
+        position: relative;
+        padding: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+    }
+    
+    .preview-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 150px;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        overflow: hidden;
+    }
+    
+    .invalid-feedback {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para inicializar la vista previa de imagen
+    function initializeImagePreview(imageInput) {
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                const formContainer = this.closest('.imagen-form');
+                let previewContainer = formContainer.querySelector('.preview-container');
+                
+                if (!previewContainer) {
+                    previewContainer = document.createElement('div');
+                    previewContainer.className = 'preview-container mb-2';
+                    const img = document.createElement('img');
+                    img.className = 'img-thumbnail';
+                    img.style.maxHeight = '150px';
+                    previewContainer.appendChild(img);
+                    formContainer.insertBefore(previewContainer, formContainer.firstChild);
+                }
+                
+                const previewImage = previewContainer.querySelector('img');
+                reader.onload = e => previewImage.src = e.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Inicializar todas las vistas previas existentes
+    document.querySelectorAll('input[type="file"]').forEach(initializeImagePreview);
+
+    // Manejar el botón de agregar imagen
+    const addButton = document.getElementById('add-imagen');
+    const totalForms = document.getElementById('id_imagenes-TOTAL_FORMS');
+    
+    addButton.addEventListener('click', function() {
+        const formCount = parseInt(totalForms.value);
+        const template = document.querySelector('.imagen-form').cloneNode(true);
+        
+        // Actualizar IDs y nombres
+        template.querySelectorAll('[id^="id_imagenes-"], [name^="imagenes-"]').forEach(element => {
+            element.id = element.id.replace('-0-', `-${formCount}-`);
+            element.name = element.name.replace('-0-', `-${formCount}-`);
+            if (element.type !== 'hidden') {
+                element.value = '';
+            }
+        });
+
+        // Limpiar vista previa si existe
+        const existingPreview = template.querySelector('.preview-container');
+        if (existingPreview) {
+            existingPreview.remove();
+        }
+
+        // Inicializar nueva vista previa
+        const newImageInput = template.querySelector('input[type="file"]');
+        initializeImagePreview(newImageInput);
+
+        // Agregar el nuevo formulario
+        document.getElementById('imagenes-container').appendChild(template);
+        totalForms.value = formCount + 1;
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}
