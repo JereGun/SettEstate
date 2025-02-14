@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Contrato
 from .forms import ActualizacionAlquilerForm
 
@@ -14,3 +15,25 @@ def registrar_actualizacion(request, contrato_id):
     else:
         form = ActualizacionAlquilerForm()
     return render(request, 'registrar_actualizacion.html', {'form': form, 'contrato': contrato})
+
+
+class ContratoListView(ListView):
+    model = Contrato
+    template_name = "contrato_list.html"
+    context_object_name = "contratos"
+
+
+class ContratoUpdateView(UpdateView):
+    model = Contrato
+    template_name = "contrato_update.html"
+
+class ContratoDeleteView(DeleteView):
+    model = Contrato
+    template_name = "contrato_delete.html"
+    success_url = "/contrato/"
+
+class ContratoCreateView(CreateView):
+    model = Contrato
+    template_name = "contrato_create.html"
+    fields = '__all__'
+    success_url = "/contrato/"
