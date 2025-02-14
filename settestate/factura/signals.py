@@ -27,5 +27,5 @@ def crear_factura_inicial(sender, instance, created, **kwargs):
             factura=factura,
             tipo='ALQUILER',
             descripcion=f'Alquiler {hoy.strftime("%B %Y")}',
-            monto=instance.get_monto_alquiler_vigente()
+            monto=instance.get_monto_alquiler()
         )

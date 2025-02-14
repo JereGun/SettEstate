@@ -83,6 +83,27 @@ class FacturaModelTest(TestCase):
             monto=Decimal('200.00')
         )
 
+        # Calcular el total
+        total = self.factura.calcular_total()
+
         # Verificar que el total se calculó correctamente
+        self.assertEqual(total, Decimal('1200.00'))
         self.assertEqual(self.factura.total, Decimal('1200.00'))
 
+    def test_total_sin_items(self):
+        # Verificar que el total es 0 cuando no hay items
+        total = self.factura.calcular_total()
+        self.assertEqual(total, Decimal('0.00'))
+
+    def test_agregar_item_actualiza_total(self):
+        # Agregar un item y verificar que el total se actualiza
+        item = ItemFactura.objects.create(
+            factura=self.factura,
+            tipo='ALQUILER',
+            descripcion='Alquiler Enero 2024',
+            monto=Decimal('1000.00')
+        )
+        
+        # El total debería actualizarse automáticamente por el save() del ItemFactura
+        self.factura.refresh_from_db()  # Actualizar desde la base de datos
+        self.assertEqual(self.factura.total, Decimal('1000.00'))

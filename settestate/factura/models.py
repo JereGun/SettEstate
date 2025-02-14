@@ -25,13 +25,16 @@ class Factura(models.Model):
 
     class Meta:
         """Meta definition for Factura."""
-
         verbose_name = 'Factura'
         verbose_name_plural = 'Facturas'
 
     def calcular_total(self):
-        total = sum(item.subtotal for item in self.items.all())
+        """Calcula el total sumando todos los items de la factura"""
+        self.total = self.items.aggregate(
+            total=models.Sum('subtotal')
+        )['total'] or Decimal('0.00')
         self.save()
+        return self.total
 
     def __str__(self):
         return f"Factura {self.numero} - {self.contrato}"
