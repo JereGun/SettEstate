@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
@@ -31,7 +31,6 @@ class FacturaUpdateView(LoginRequiredMixin, UpdateView):
     model = Factura
     form_class = FacturaForm
     template_name = 'factura/factura_form.html'
-    fields = ['estado', 'fecha_vencimiento']
     context_object_name = 'factura'
     success_url = reverse_lazy('factura:factura_list')
 
@@ -58,7 +57,6 @@ class ItemFacturaUpdateView(LoginRequiredMixin, UpdateView):
     model = ItemFactura
     form_class = ItemFacturaForm
     template_name = 'factura/itemfactura_form.html'
-    fields = ['descripcion', 'monto']
     context_object_name = 'itemfactura'
 
     def get_success_url(self):
