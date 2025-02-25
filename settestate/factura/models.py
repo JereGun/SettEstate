@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from decimal import Decimal
-from contrato.models import Contrato
 
 class Factura(models.Model):
     ESTADO_CHOICES = [

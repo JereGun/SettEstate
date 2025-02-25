@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
 from decimal import Decimal
+from datetime import date
 from factura.models import Factura, ItemFactura
 from contrato.models import Contrato
 from persona.models import Persona
@@ -8,16 +9,43 @@ from propiedad.models import Propiedad
 
 class SignalsTest(TestCase):
     def setUp(self):
+         # Crear datos necesarios para las pruebas
         self.persona = Persona.objects.create(
-            nombre="Juan",
-            apellido="Pérez",
-            dni="12345678"
+            documento='123456789',
+            nombre='Juan',
+            apellido='Perez',
+            fecha_nacimiento=date(1980, 1, 1),
+            direccion='Calle Falsa 123',
+            ciudad='Ciudad Falsa',
+            provincia='Provincia Falsa',
+            pais='Pais Falso',
+            telefono='1234567890',
+            email='email@falso.com'
         )
         
         self.propiedad = Propiedad.objects.create(
-            nombre="Casa Test",
-            direccion="Calle Test 123",
-            precio_alquiler=Decimal('1000.00')
+            nombre='Casa en el centro',
+            calle='Av. Siempre Viva 123',
+            dueño=self.persona,
+            numeracion='123',
+            piso='1',
+            departamento='A',
+            ciudad='Córdoba',
+            provincia='Córdoba',
+            pais='Argentina',
+            descripcion='Una casa muy bonita en el centro de la ciudad.',
+            tipo='CASA',
+            disponible=True,
+            alquiler_venta='VENTA',
+            precio=100000.00,
+            baños=2,
+            dormitorios=3,
+            habitaciones=4,
+            cocheras=1,
+            metros_cuadrados=150.00,
+            pisos=2,
+            antiguedad=10,
+            piscina=True
         )
 
     def test_crear_factura_al_crear_contrato(self):
