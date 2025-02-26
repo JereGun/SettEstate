@@ -19,21 +19,21 @@ def registrar_actualizacion(request, contrato_id):
 
 class ContratoListView(ListView):
     model = Contrato
-    template_name = "contrato_list.html"
+    template_name = "contrato/contrato_list.html"
     context_object_name = "contratos"
 
 
 class ContratoUpdateView(UpdateView):
     model = Contrato
-    template_name = "contrato_update.html"
+    template_name = "contrato/contrato_form.html"
 
 class ContratoDeleteView(DeleteView):
     model = Contrato
-    template_name = "contrato_delete.html"
+    template_name = "contrato/contrato_delete.html"
     success_url = "/contrato/"
 
 class ContratoCreateView(CreateView):
     model = Contrato
-    template_name = "contrato_create.html"
+    template_name = "contrato/contrato_form.html"
     fields = '__all__'
     success_url = "/contrato/"
