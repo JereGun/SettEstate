@@ -9,23 +9,184 @@
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
-                {% for field in form %}
-                <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                    <div class="alert alert-danger">
-                        {{ field.errors }}
+                
+                <!-- Datos de la factura -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <label for="{{ form.contrato.id_for_label }}" class="form-label">{{ form.contrato.label }}</label>
+                        {{ form.contrato }}
+                        {% if form.contrato.errors %}
+                            <div class="alert alert-danger mt-1">{{ form.contrato.errors }}</div>
+                        {% endif %}
                     </div>
-                    {% endif %}
+                    <div class="col-md-4 mb-3">
+                        <label for="{{ form.fecha_vencimiento.id_for_label }}" class="form-label">{{ form.fecha_vencimiento.label }}</label>
+                        {{ form.fecha_vencimiento }}
+                        {% if form.fecha_vencimiento.errors %}
+                            <div class="alert alert-danger mt-1">{{ form.fecha_vencimiento.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="{{ form.estado.id_for_label }}" class="form-label">{{ form.estado.label }}</label>
+                        {{ form.estado }}
+                        {% if form.estado.errors %}
+                            <div class="alert alert-danger mt-1">{{ form.estado.errors }}</div>
+                        {% endif %}
+                    </div>
                 </div>
-                {% endfor %}
-                <div class="mt-3">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                
+                <!-- Ítems de la factura -->
+                <h4 class="mb-3">Ítems de Factura</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="item-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                                <th>Monto</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{ formset.management_form }}
+                            {% for form in formset %}
+                                <tr class="item-form">
+                                    <td>
+                                        {{ form.id }}
+                                        {{ form.tipo }}
+                                        {% if form.tipo.errors %}
+                                            <div class="text-danger">{{ form.tipo.errors }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ form.descripcion }}
+                                        {% if form.descripcion.errors %}
+                                            <div class="text-danger">{{ form.descripcion.errors }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ form.monto }}
+                                        {% if form.monto.errors %}
+                                            <div class="text-danger">{{ form.monto.errors }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if form.instance.pk %}
+                                            {{ form.DELETE }}
+                                            <label for="{{ form.DELETE.id_for_label }}">
+                                                <i class="fas fa-trash text-danger"></i>
+                                            </label>
+                                        {% else %}
+                                            <button type="button" class="btn btn-sm btn-outline-danger remove-form">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mb-3">
+                    <button type="button" class="btn btn-success" id="add-item">
+                        <i class="fas fa-plus"></i> Agregar ítem
+                    </button>
+                </div>
+                
+                <div class="mt-4 text-end">
                     <a href="{% url 'factura:factura_list' %}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addButton = document.getElementById('add-item');
+        
+        // Detectar el prefijo del formset automáticamente
+        const formsetPrefix = document.querySelector('.item-form input, .item-form select').name.split('-')[0];
+        const totalForms = document.getElementById(`id_${formsetPrefix}-TOTAL_FORMS`);
+        
+        if (!totalForms) {
+            console.error(`No se encontró el campo TOTAL_FORMS. Formset prefix: "${formsetPrefix}"`);
+            return;
+        }
+        
+        // Función para actualizar los índices de los formularios
+        function updateElementIndex(el, ndx) {
+            const prefix = formsetPrefix;
+            const id_regex = new RegExp('(' + prefix + '-\\d+)');
+            const replacement = prefix + '-' + ndx;
+            
+            if (el.id) el.id = el.id.replace(id_regex, replacement);
+            if (el.name) el.name = el.name.replace(id_regex, replacement);
+            
+            // Actualizar también los atributos for de las etiquetas
+            if (el.hasAttribute('for')) {
+                el.setAttribute('for', el.getAttribute('for').replace(id_regex, replacement));
+            }
+        }
+        
+        // Función para clonar un formulario
+        addButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const formCount = parseInt(totalForms.value);
+            const templateRow = document.querySelector('.item-form');
+            
+            if (!templateRow) {
+                console.error("No se encontró la plantilla de fila para clonar");
+                return;
+            }
+            
+            const row = templateRow.cloneNode(true);
+            
+            // Limpiar los valores del formulario clonado
+            row.querySelectorAll('input, select').forEach(function(input) {
+                if (input.type !== 'checkbox') {
+                    input.value = '';
+                }
+                
+                // Actualizar los índices
+                updateElementIndex(input, formCount);
+            });
+            
+            // Agregar botón de eliminar al nuevo formulario
+            const deleteButton = row.querySelector('.remove-form');
+            if (deleteButton) {
+                deleteButton.addEventListener('click', function() {
+                    row.remove();
+                    updateTotalForms();
+                });
+            }
+            
+            // Insertar el nuevo formulario en la tabla
+            document.querySelector('#item-table tbody').appendChild(row);
+            
+            // Actualizar el contador de formularios
+            totalForms.value = formCount + 1;
+        });
+        
+        // Configurar botones de eliminar existentes
+        document.querySelectorAll('.remove-form').forEach(function(button) {
+            button.addEventListener('click', function() {
+                button.closest('.item-form').remove();
+                updateTotalForms();
+            });
+        });
+        
+        // Función para actualizar el contador de formularios después de eliminar
+        function updateTotalForms() {
+            const forms = document.querySelectorAll('.item-form');
+            totalForms.value = forms.length;
+        }
+    });
+</script>
+{% endblock %}
+

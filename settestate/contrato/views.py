@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Contrato
-from .forms import ActualizacionAlquilerForm
+from .forms import ActualizacionAlquilerForm, ContratoForm
 
 def registrar_actualizacion(request, contrato_id):
     contrato = get_object_or_404(Contrato, id=contrato_id)
@@ -25,7 +25,9 @@ class ContratoListView(ListView):
 
 class ContratoUpdateView(UpdateView):
     model = Contrato
+    form_class = ContratoForm
     template_name = "contrato/contrato_form.html"
+    success_url = "contrato_list"
 
 class ContratoDeleteView(DeleteView):
     model = Contrato
@@ -34,6 +36,6 @@ class ContratoDeleteView(DeleteView):
 
 class ContratoCreateView(CreateView):
     model = Contrato
+    form_class = ContratoForm
     template_name = "contrato/contrato_form.html"
-    fields = '__all__'
-    success_url = "/contrato/"
+    success_url = "contrato_list"

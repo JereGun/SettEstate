@@ -1,21 +1,49 @@
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from .models import Factura, ItemFactura
-from .forms import FacturaForm, ItemFacturaForm
+from .forms import FacturaForm, ItemFacturaForm, ItemFacturaFormSet
 
 
 class FacturaCreateView(LoginRequiredMixin, CreateView):
     model = Factura
-    form_class = FacturaForm  # Usa form_class en lugar de fields
+    form_class = FacturaForm
     template_name = 'factura/factura_form.html'
-    success_url = reverse_lazy('factura:factura_list')
 
-    def form_valid(self, form):
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        formset = ItemFacturaFormSet()
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
+    
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        formset = ItemFacturaFormSet(request.POST)
+        
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+        else:
+            return self.form_invalid(form, formset)
+    
+    def form_valid(self, form, formset):
         form.instance.fecha_emision = timezone.now().date()
-        return super().form_valid(form)
+        self.object = form.save()
+        formset.instance = self.object
+        formset.save()
+        return redirect(self.get_success_url())
+    
+    def form_invalid(self, form, formset):
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
+    
+    def get_success_url(self):
+        return reverse_lazy('factura:factura_list')
 
 class FacturaListView(LoginRequiredMixin, ListView):
     model = Factura
@@ -31,8 +59,30 @@ class FacturaUpdateView(LoginRequiredMixin, UpdateView):
     model = Factura
     form_class = FacturaForm
     template_name = 'factura/factura_form.html'
-    context_object_name = 'factura'
-    success_url = reverse_lazy('factura:factura_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['formset'] = ItemFacturaFormSet(
+                self.request.POST, instance=self.object
+            )
+        else:
+            context['formset'] = ItemFacturaFormSet(instance=self.object)
+        return context
+    
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            self.object = form.save()
+            formset.instance = self.object
+            formset.save()
+            return redirect(self.get_success_url())
+        else:
+            return self.render_to_response(self.get_context_data(form=form, formset=formset))
+    
+    def get_success_url(self):
+        return reverse_lazy('factura:factura_list')
 
 class FacturaDeleteView(LoginRequiredMixin, DeleteView):
     model = Factura

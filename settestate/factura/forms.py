@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import inlineformset_factory
 from .models import Factura, ItemFactura
 
 class FacturaForm(forms.ModelForm):
@@ -25,3 +26,12 @@ class ItemFacturaForm(forms.ModelForm):
             'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
             'monto': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
         }
+
+# FormSet para relacionar los forms de ItemFactura y de Factura
+ItemFacturaFormSet = inlineformset_factory(
+    Factura,
+    ItemFactura,
+    form=ItemFacturaForm,
+    extra=1, # Numero de formularios vacios para mostrar
+    can_delete=True # Permite eliminar items existentes
+)
