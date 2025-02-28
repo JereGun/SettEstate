@@ -27,7 +27,16 @@
                     <td>{{ factura.contrato }}</td>
                     <td>{{ factura.fecha_emision }}</td>
                     <td>{{ factura.fecha_vencimiento }}</td>
-                    <td><span class="badge bg-{{ factura.estado|lower }}">{{ factura.get_estado_display }}</span></td>
+                    <td>
+                        <span class="badge 
+                        {% if factura.estado == 'BORRADOR' %}bg-warning
+                        {% elif factura.estado == 'EMITIDA' %}bg-primary
+                        {% elif factura.estado == 'PAGADA' %}bg-success
+                        {% elif factura.estado == 'ANULADA' %}bg-danger   
+                        {% else %}bg-light text-dark{% endif %}">
+                            {{ factura.get_estado_display }}
+                        </span>
+                    </td>
                     <td>${{ factura.total }}</td>
                     <td>
                         <a href="{% url 'factura:factura_detail' factura.pk %}" class="btn btn-sm btn-info">Ver</a>
