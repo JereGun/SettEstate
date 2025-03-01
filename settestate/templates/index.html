@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Página Principal - SetteState{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Bienvenido a SetteState</h1>
+    <p class="lead">Gestión eficiente de propiedades, contratos y facturas.</p>
+    <hr class="my-4">
+    <p>Utiliza nuestra plataforma para administrar todos tus activos de manera sencilla y efectiva.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'propiedad_list' %}" role="button">Ver Propiedades</a>
+    <a class="btn btn-secondary btn-lg" href="{% url 'contrato_list' %}" role="button">Ver Contratos</a>
+    <a class="btn btn-success btn-lg" href="{% url 'factura:factura_list' %}" role="button">Ver Facturas</a>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>¿Por qué elegir SetteState?</h2>
+        <p>Con SetteState, puedes gestionar tus propiedades de manera fácil y rápida.</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Funcionalidades</h2>
+        <ul>
+            <li>Gestión de propiedades</li>
+            <li>Seguimiento de contratos</li>
+            <li>Generación de facturas</li>
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h2>Contáctanos</h2>
+        <p>Si tienes alguna pregunta, no dudes en <a href="{% url 'contacto' %}">contactarnos</a>.</p>
+    </div>
+</div>
+{% endblock %}
