@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Factura {{ factura.numero }}</title>
+    <!--Marca de Agua para facturas anuladas -->
+    {% if factura.estado == 'ANULADA' %}
+        <style>
+            body::before {
+                content: "ANULADA";
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                font-size: 100px;
+                color: rgba(255, 0, 0, 0.2);
+                z-index: -1;
+            }
+        </style>
+    {% endif %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            margin: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .company-info {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .company-logo {
+            float: left;
+            margin-right: 20px;
+            max-width: 150px;
+            max-height: 80px;
+        }
+        .company-details {
+            float: left;
+        }
+        .factura-numero {
+            float: right;
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        .client-info {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .factura-info {
+            margin-bottom: 20px;
+        }
+        .factura-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .factura-info td {
+            padding: 5px;
+        }
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .items-table th, .items-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .items-table th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .total-table {
+            width: 300px;
+            float: right;
+            border-collapse: collapse;
+        }
+        .total-table td {
+            padding: 5px;
+            border: 1px solid #ddd;
+        }
+        .total-table .total-row {
+            font-weight: bold;
+            background-color: #f2f2f2;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .payment-info {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="company-info clearfix">
+        {% if empresa.logo %}
+        <img src="{{ empresa.logo.url }}" alt="Logo de la empresa" class="company-logo">
+        {% endif %}
+        <div class="company-details">
+            <h2>{{ empresa.nombre }}</h2>
+            <p>{{ empresa.direccion }}</p>
+            <p>{{ empresa.ciudad }}, {{ empresa.provincia }} {{ empresa.codigo_postal }}</p>
+            <p>CUIT: {{ empresa.cuit }}</p>
+            <p>Tel: {{ empresa.telefono }} | Email: {{ empresa.email }}</p>
+        </div>
+        <div class="factura-numero">
+            <h1>FACTURA</h1>
+            <h2>{{ factura.numero }}</h2>
+            <p><strong>Fecha de emisión:</strong> {{ factura.fecha_emision }}</p>
+            <p><strong>Fecha de vencimiento:</strong> {{ factura.fecha_vencimiento }}</p>
+        </div>
+    </div>
+    
+    <div class="client-info">
+        <h3>Datos del Inquilino</h3>
+        <p><strong>Nombre:</strong> {{ factura.contrato.inquilino.nombre }} {{ factura.contrato.inquilino.apellido }}</p>
+        <p><strong>DNI/CUIT:</strong> {{ factura.contrato.inquilino.documento }}</p>
+        <p><strong>Dirección:</strong> {{ factura.contrato.inquilino.direccion }}</p>
+        <p><strong>Teléfono:</strong> {{ factura.contrato.inquilino.telefono }}</p>
+        <p><strong>Email:</strong> {{ factura.contrato.inquilino.email }}</p>
+    </div>
+    
+    <div class="factura-info">
+        <h3>Información del Contrato</h3>
+        <table>
+            <tr>
+                <td><strong>Contrato:</strong></td>
+                <td>{{ factura.contrato }}</td>
+                <td><strong>Propiedad:</strong></td>
+                <td>{{ factura.contrato.propiedad.direccion }}</td>
+            </tr>
+            <tr>
+                <td><strong>Período:</strong></td>
+                <td>{{ factura.periodo_inicio }} al {{ factura.periodo_fin }}</td>
+                <td><strong>Estado:</strong></td>
+                <td>{{ factura.get_estado_display }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in factura.items.all %}
+            <tr>
+                <td>{{ item.get_tipo_display }}</td>
+                <td>{{ item.descripcion }}</td>
+                <td>${{ item.monto }}</td>
+                <td>${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="clearfix">
+        <table class="total-table">
+            <tr>
+                <td><strong>Subtotal:</strong></td>
+                <td>${{ factura.subtotal }}</td>
+            </tr>
+            {% if factura.impuestos %}
+            <tr>
+                <td><strong>Impuestos:</strong></td>
+                <td>${{ factura.impuestos }}</td>
+            </tr>
+            {% endif %}
+            <tr class="total-row">
+                <td><strong>TOTAL:</strong></td>
+                <td>${{ factura.total }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="payment-info">
+        <h3>Información de Pago</h3>
+        <p><strong>Métodos de pago aceptados:</strong> {{ empresa.metodos_pago }}</p>
+        <p><strong>Cuenta bancaria:</strong> {{ empresa.cuenta_bancaria }}</p>
+        <p><strong>CBU:</strong> {{ empresa.cbu }}</p>
+        <p><strong>Alias:</strong> {{ empresa.alias }}</p>
+    </div>
+    
+    <div class="footer">
+        <p>Este documento es una factura electrónica generada por el sistema.</p>
+        <p>{{ empresa.nombre }} - {{ empresa.cuit }}</p>
+        <p>{{ empresa.direccion }}, {{ empresa.ciudad }}, {{ empresa.provincia }}</p>
+    </div>
+</body>
+</html>

@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
@@ -6,7 +7,7 @@ from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from .models import Factura, ItemFactura
 from .forms import FacturaForm, ItemFacturaForm, ItemFacturaFormSet
-
+from .utils import render_to_pdf
 
 # Vistas de Factura
 class FacturaCreateView(LoginRequiredMixin, CreateView):
@@ -133,6 +134,24 @@ def marcar_como_borrador(request, pk):
         factura.marcar_borrador()
         messages.success(request, "Factura establecida como borrador")
     return redirect('factura:factura_detail', pk=pk)
+
+def factura_pdf_view(request, pk):
+    """Vista para generar un PDF de la factura"""
+    factura = get_object_or_404(Factura, pk=pk)
+    
+    # Generar el PDF
+    pdf = render_to_pdf('factura/factura_pdf.html', {'factura': factura})
+    
+    # Configurar la respuesta para descargar el archivo
+    if pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = f"Factura_{factura.numero}.pdf"
+        content = f"attachment; filename={filename}"
+        response['Content-Disposition'] = content
+        return response
+    
+    # En caso de error
+    return HttpResponse("Error al generar el PDF", status=400)
 
 # Vistas de ItemFactura
 class ItemFacturaCreateView(LoginRequiredMixin, CreateView):
