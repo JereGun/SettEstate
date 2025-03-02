@@ -35,6 +35,32 @@ class Factura(models.Model):
         self.save()
         return self.total
 
+    def es_editable(self):
+        """Determina si la factura es editable"""
+        return self.estado == "BORRADOR"
+    
+    def emitir(self):
+        """Cambia el estado a EMITIDA"""
+        if self.estado == "BORRADOR":
+            self.estado = "EMITIDA"
+            self.save()
+    
+    def anular(self):
+        """Cancela la Factura"""
+        if self.estado in ['BORRADOR', 'EMITIDA']:
+            self.estado = 'ANULADA'
+            self.save()
+
+    def marcar_pagada(self):
+        """Marca la factura como pagada"""
+        if self.estado == 'EMITIDA':
+            self.estado = 'PAGADA'
+            self.save()
+    def marcar_borrador(self):
+        if self.estado in ['EMITIDA', 'PAGADA', 'ANULADA']:
+            self.estado = 'BORRADOR'
+            self.save()
+
     def __str__(self):
         return f"Factura {self.numero} - {self.contrato}"
 
