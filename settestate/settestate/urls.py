@@ -16,8 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from settestate.views import IndexView, ContactoView, enviar_contacto
 
 urlpatterns = [
+    path('', IndexView.as_view(), name="index"),
+    path('contacto/', ContactoView.as_view(), name="contacto"),
+    path('enviar_contacto', enviar_contacto, name="enviar_contacto"),
     path('admin/', admin.site.urls),
     path('personas/', include('persona.urls')),
     path('propiedad/', include('propiedad.urls')),
