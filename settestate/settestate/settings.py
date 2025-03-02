@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'contrato',
     'imagen',
     'factura',
+    'empresa',
 
     # Aplicaciones de terceros
     'crispy_forms',  # Agrega crispy_forms
