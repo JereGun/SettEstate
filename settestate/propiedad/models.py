@@ -58,5 +58,3 @@ class Propiedad(models.Model):
     def __str__(self):
         """Unicode representation of Propiedad."""
         return f'{self.nombre} - {self.tipo} - {self.alquiler_venta} - ${self.precio}'
-
-

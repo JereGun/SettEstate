@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3>Factura #{{ factura.numero }}</h3>
+                <div>
+                    <a href="{% url 'factura:factura_update' factura.pk %}" class="btn btn-warning">Editar</a>
+                    <a href="{% url 'factura:factura_list' %}" class="btn btn-secondary">Volver</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5>Detalles del Contrato</h5>
+                    <p><strong>Contrato:</strong> {{ factura.contrato }}</p>
+                    <p><strong>Inquilino:</strong> {{ factura.contrato.inquilino }}</p>
+                    <p><strong>Propiedad:</strong> {{ factura.contrato.propiedad }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Detalles de la Factura</h5>
+                    <p><strong>Estado:</strong> <span class="badge bg-{{ factura.estado|lower }}">{{ factura.get_estado_display }}</span></p>
+                    <p><strong>Fecha Emisión:</strong> {{ factura.fecha_emision }}</p>
+                    <p><strong>Fecha Vencimiento:</strong> {{ factura.fecha_vencimiento }}</p>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>Items de la Factura</h5>
+                <a href="{% url 'factura:itemfactura_create' factura.pk %}" class="btn btn-primary">Agregar Item</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in factura.items.all %}
+                        <tr>
+                            <td>{{ item.get_tipo_display }}</td>
+                            <td>{{ item.descripcion }}</td>
+                            <td>${{ item.monto }}</td>
+                            <td>
+                                <a href="{% url 'factura:itemfactura_update' item.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                                <a href="{% url 'factura:itemfactura_delete' item.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No hay items en esta factura.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" class="text-end"><strong>Total:</strong></td>
+                            <td colspan="2"><strong>${{ factura.total }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Contratos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Lista de Contratos</h2>
+        <a href="{% url 'contrato_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nuevo Contrato
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Propiedad</th>
+                    <th>Inquilino</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Frecuencia Actualización</th>
+                    <th>Última Actualización</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contrato in contratos %}
+                <tr>
+                    <td>{{ contrato.propiedad.nombre }}</td>
+                    <td>{{ contrato.inquilino.nombre_completo }}</td>
+                    <td>{{ contrato.fecha_inicio }}</td>
+                    <td>{{ contrato.fecha_fin }}</td>
+                    <td>{{ contrato.get_frecuencia_actualizacion_display }}</td>
+                    <td>{{ contrato.ultima_actualizacion|date:"d/m/Y" }}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'contrato_update' contrato.pk %}" class="btn btn-sm btn-warning" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'contrato_delete' contrato.pk %}" class="btn btn-sm btn-danger" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No hay contratos registrados</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

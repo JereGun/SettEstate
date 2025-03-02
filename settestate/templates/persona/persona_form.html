@@ -12,32 +12,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="id_documento" class="form-label fw-bold">Documento</label>
-                            {{ form.documento }}
-                            {% if form.documento.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.documento.errors|join:", " }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="id_fecha_nacimiento" class="form-label fw-bold">Fecha de Nacimiento</label>
-                            {{ form.fecha_nacimiento }}
-                            {% if form.fecha_nacimiento.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.fecha_nacimiento.errors|join:", " }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
                             <label for="id_nombre" class="form-label fw-bold">Nombre</label>
-                            {{ form.nombre }}
+                            <input type="text" name="nombre" id="id_nombre" class="form-control" value="{{ form.nombre.value|default:'' }}" required>
                             {% if form.nombre.errors %}
                                 <div class="invalid-feedback d-block">
                                     {{ form.nombre.errors|join:", " }}
@@ -48,7 +24,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="id_apellido" class="form-label fw-bold">Apellido</label>
-                            {{ form.apellido }}
+                            <input type="text" name="apellido" id="id_apellido" class="form-control" value="{{ form.apellido.value|default:'' }}" required>
                             {% if form.apellido.errors %}
                                 <div class="invalid-feedback d-block">
                                     {{ form.apellido.errors|join:", " }}
@@ -57,9 +33,33 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_documento" class="form-label fw-bold">Documento</label>
+                            <input type="text" name="documento" id="id_documento" class="form-control" value="{{ form.documento.value|default:'' }}" required>
+                            {% if form.documento.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.documento.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_fecha_nacimiento" class="form-label fw-bold">Fecha de Nacimiento</label>
+                            <input type="date" name="fecha_nacimiento" id="id_fecha_nacimiento" class="form-control" value="{{ form.fecha_nacimiento.value|default:'' }}" required>
+                            {% if form.fecha_nacimiento.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.fecha_nacimiento.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
                 <div class="mb-3">
                     <label for="id_direccion" class="form-label fw-bold">Dirección</label>
-                    {{ form.direccion }}
+                    <input type="text" name="direccion" id="id_direccion" class="form-control" value="{{ form.direccion.value|default:'' }}" required>
                     {% if form.direccion.errors %}
                         <div class="invalid-feedback d-block">
                             {{ form.direccion.errors|join:", " }}
@@ -69,11 +69,16 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="id_ciudad" class="form-label fw-bold">Ciudad</label>
-                            {{ form.ciudad }}
-                            {% if form.ciudad.errors %}
+                            <label for="id_pais" class="form-label fw-bold">País</label>
+                            <select name="pais" id="id_pais" class="form-control" required>
+                                <option value="">Seleccione un país</option>
+                                {% for value, label in form.fields.pais.choices %}
+                                    <option value="{{ value }}" {% if form.pais.value == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.pais.errors %}
                                 <div class="invalid-feedback d-block">
-                                    {{ form.ciudad.errors|join:", " }}
+                                    {{ form.pais.errors|join:", " }}
                                 </div>
                             {% endif %}
                         </div>
@@ -81,7 +86,9 @@
                     <div class="col-md-4">
                         <div class="mb-3">
                             <label for="id_provincia" class="form-label fw-bold">Provincia</label>
-                            {{ form.provincia }}
+                            <select name="provincia" id="id_provincia" class="form-control" required>
+                                <option value="">Seleccione una provincia</option>
+                            </select>
                             {% if form.provincia.errors %}
                                 <div class="invalid-feedback d-block">
                                     {{ form.provincia.errors|join:", " }}
@@ -91,11 +98,13 @@
                     </div>
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="id_pais" class="form-label fw-bold">País</label>
-                            {{ form.pais }}
-                            {% if form.pais.errors %}
+                            <label for="id_ciudad" class="form-label fw-bold">Ciudad</label>
+                            <select name="ciudad" id="id_ciudad" class="form-control" required>
+                                <option value="">Seleccione una ciudad</option>
+                            </select>
+                            {% if form.ciudad.errors %}
                                 <div class="invalid-feedback d-block">
-                                    {{ form.pais.errors|join:", " }}
+                                    {{ form.ciudad.errors|join:", " }}
                                 </div>
                             {% endif %}
                         </div>
@@ -105,7 +114,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="id_telefono" class="form-label fw-bold">Teléfono</label>
-                            {{ form.telefono }}
+                            <input type="text" name="telefono" id="id_telefono" class="form-control" value="{{ form.telefono.value|default:'' }}" required>
                             {% if form.telefono.errors %}
                                 <div class="invalid-feedback d-block">
                                     {{ form.telefono.errors|join:", " }}
@@ -116,7 +125,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="id_email" class="form-label fw-bold">Email</label>
-                            {{ form.email }}
+                            <input type="email" name="email" id="id_email" class="form-control" value="{{ form.email.value|default:'' }}" required>
                             {% if form.email.errors %}
                                 <div class="invalid-feedback d-block">
                                     {{ form.email.errors|join:", " }}
@@ -140,44 +149,80 @@
     </form>
 </div>
 
-<!-- Estilos personalizados -->
-<style>
-    .card {
-        border: none;
-        border-radius: 10px;
-    }
-    .form-control {
-        border-radius: 5px;
-        padding: 10px;
-    }
-    .form-control:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);
-    }
-    .btn-lg {
-        padding: 10px 20px;
-        font-size: 1.1rem;
-    }
-    .invalid-feedback {
-        display: block;
-        margin-top: 5px;
-        color: #dc3545; /* Color rojo para errores */
-    }
-    .is-invalid {
-        border-color: #dc3545; /* Borde rojo para campos inválidos */
-    }
-</style>
-
-<!-- Script para manejar la validación -->
 <script>
-    // Agrega la clase 'is-invalid' a los campos con errores
-    document.addEventListener("DOMContentLoaded", function() {
-        const fields = document.querySelectorAll(".form-control");
-        fields.forEach(field => {
-            if (field.classList.contains("is-invalid")) {
-                field.classList.add("is-invalid");
+document.addEventListener("DOMContentLoaded", function() {
+    // Obtener los elementos del formulario
+    const paisSelect = document.getElementById('id_pais');
+    const provinciaSelect = document.getElementById('id_provincia');
+    const ciudadSelect = document.getElementById('id_ciudad');
+    
+    // Cargar los datos de provincias y ciudades desde el contexto de Django
+    const provinciasData = {{ provincias_data|safe }};
+    const ciudadesData = {{ ciudades_data|safe }};
+    
+    // Función para cargar provincias según el país seleccionado
+    function cargarProvincias() {
+        const pais = paisSelect.value;
+        provinciaSelect.innerHTML = '<option value="">Seleccione una provincia</option>';
+        ciudadSelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
+        
+        if (pais && provinciasData[pais]) {
+            provinciasData[pais].forEach(provincia => {
+                const option = document.createElement('option');
+                option.value = provincia.nombre;
+                option.text = provincia.nombre;
+                provinciaSelect.appendChild(option);
+            });
+        }
+    }
+    
+    // Función para cargar ciudades según la provincia seleccionada
+    function cargarCiudades() {
+        const provincia = provinciaSelect.value;
+        ciudadSelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
+        
+        if (provincia && ciudadesData[provincia]) {
+            ciudadesData[provincia].forEach(ciudad => {
+                const option = document.createElement('option');
+                option.value = ciudad.nombre;
+                option.text = ciudad.nombre;
+                ciudadSelect.appendChild(option);
+            });
+        }
+    }
+    
+    // Asignar eventos a los selectores
+    paisSelect.addEventListener('change', cargarProvincias);
+    provinciaSelect.addEventListener('change', cargarCiudades);
+    
+    // Si ya hay valores seleccionados (en caso de edición)
+    if (paisSelect.value) {
+        cargarProvincias();
+        
+        // Preseleccionar la provincia si existe
+        const provinciaValor = "{{ form.provincia.value|default:'' }}";
+        if (provinciaValor) {
+            for (let i = 0; i < provinciaSelect.options.length; i++) {
+                if (provinciaSelect.options[i].value === provinciaValor) {
+                    provinciaSelect.selectedIndex = i;
+                    break;
+                }
             }
-        });
-    });
+            
+            // Cargar y preseleccionar la ciudad
+            cargarCiudades();
+            const ciudadValor = "{{ form.ciudad.value|default:'' }}";
+            if (ciudadValor) {
+                for (let i = 0; i < ciudadSelect.options.length; i++) {
+                    if (ciudadSelect.options[i].value === ciudadValor) {
+                        ciudadSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+});
 </script>
+          
 {% endblock %}

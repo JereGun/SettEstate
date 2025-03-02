@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Contacto - SetteState{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Contáctanos</h1>
+    <p class="text-center">Si tienes alguna pregunta, no dudes en enviarnos un mensaje.</p>
+
+    <form method="post" action="{% url 'enviar_contacto' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="mensaje">Mensaje:</label>
+            <textarea class="form-control" id="mensaje" name="mensaje" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+</div>
+{% endblock %}

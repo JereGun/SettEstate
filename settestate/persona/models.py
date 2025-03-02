@@ -2,6 +2,16 @@ from django.db import models
 from django.core.validators import RegexValidator
 
 class Persona(models.Model):
+    PAIS = [
+        ('ARG', 'Argentina'),
+        ('BRA', 'Brasil'),
+        ('CHI', 'Chile'),
+        ('PER', 'Perú'),
+        ('URU', 'Uruguay'),
+        ('PAR', 'Paraguay'),
+        ('BOL', 'Bolivia')
+    ]
+
     """Model definition for Persona."""
     documento = models.CharField(max_length=9, 
                                  unique=True, 
@@ -15,7 +25,7 @@ class Persona(models.Model):
     direccion = models.CharField(max_length=100)
     ciudad = models.CharField(max_length=50)
     provincia = models.CharField(max_length=50)
-    pais = models.CharField(max_length=50)
+    pais = models.CharField(max_length=50, choices=PAIS, default='ARG')
     telefono = models.CharField(max_length=20, 
                                 validators=[
                                     RegexValidator(regex='^[0-9]*$',

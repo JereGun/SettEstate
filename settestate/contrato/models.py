@@ -30,6 +30,23 @@ class Contrato(models.Model):
     def __str__(self):
         """Unicode representation of Contrato."""
         return f'Contrato de {self.propiedad.nombre} - {self.inquilino.nombre_completo()} - {self.fecha_inicio} hasta {self.fecha_fin}'
+    
+    def get_monto_alquiler(self, fecha=None):
+        """
+        Retorna el monto de alquiler vigente para una fecha dada
+        En el caso de no especificar fecha, usa la fecha actual
+        """
+        if fecha is None:
+            fecha = timezone.now().date()
+        
+        ultima_actualizacion = self.actualizacionalquiler_set.filter(
+            fecha_actualizacion__lte=fecha
+        ).order_by('-fecha_actualizacion').first()
+
+        if ultima_actualizacion:
+            return ultima_actualizacion.nuevo_precio
+        return self.propiedad.precio
+
 
 class ActualizacionAlquiler(models.Model):
     """Model definition for ActualziacionAlquiler."""
