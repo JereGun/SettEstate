@@ -57,20 +57,26 @@
             
             <div class="mt-4 text-end">
                 <a href="{% url 'factura:factura_list' %}" class="btn btn-secondary">Volver</a>
-                
+                                
+                <!-- Botón para generar PDF-->
+                {% if factura.estado == 'EMITIDA' or factura.estado == 'PAGADA' or factura.estado == 'ANULADA' %}
+                    <a href="{% url 'factura:factura_pdf' factura.id %}" class="btn btn-info" target="_blank">
+                        <i class="fas fa-file-pdf"></i> Generar PDF
+                    </a>
+                {% endif %}
                 {% if factura.estado == 'BORRADOR' %}
                     <a href="{% url 'factura:factura_update' factura.id %}" class="btn btn-warning">Editar</a>
                     <a href="{% url 'factura:emitir_factura' factura.id %}" class="btn btn-primary" onclick="return confirm('¿Está seguro de que desea emitir esta factura? Una vez emitida, no podrá modificarla.')">Emitir</a>
-                    <a href="{% url 'factura:cancelar_factura' factura.id %}" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea cancelar esta factura?')">Cancelar</a>
+                    <a href="{% url 'factura:cancelar_factura' factura.id %}" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea cancelar esta factura?')">Anular</a>
                 {% elif factura.estado == 'EMITIDA' %}
                     <a href="{% url 'factura:marcar_como_pagada' factura.id %}" class="btn btn-success" onclick="return confirm('¿Está seguro de que desea marcar esta factura como pagada?')">Marcar como Pagada</a>
-                    <a href="{% url 'factura:marcar_como_borrador' factura.id %}" class="btn btn-success" onclick="return confirm('¿Está seguro de que desea marcar esta factura como borrador?')">Marcar como Borrador</a>
-                    <a href="{% url 'factura:cancelar_factura' factura.id %}" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea cancelar esta factura?')">Cancelar</a>
+                    <a href="{% url 'factura:marcar_como_borrador' factura.id %}" class="btn btn-warning" onclick="return confirm('¿Está seguro de que desea marcar esta factura como borrador?')">Marcar como Borrador</a>
+                    <a href="{% url 'factura:cancelar_factura' factura.id %}" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea cancelar esta factura?')">Anular</a>
                 {% elif factura.estado == 'PAGADA' %}
-                <a href="{% url 'factura:marcar_como_borrador' factura.id %}" class="btn btn-success" onclick="return confirm('¿Está seguro de que desea marcar esta factura como borrador?')">Marcar como Borrador</a>
-                <a href="{% url 'factura:cancelar_factura' factura.id %}" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea cancelar esta factura?')">Cancelar</a>
+                    <a href="{% url 'factura:marcar_como_borrador' factura.id %}" class="btn btn-success" onclick="return confirm('¿Está seguro de que desea marcar esta factura como borrador?')">Marcar como Borrador</a>
+                    <a href="{% url 'factura:cancelar_factura' factura.id %}" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea cancelar esta factura?')">Anular</a>
                 {% else %}
-                <a href="{% url 'factura:marcar_como_borrador' factura.id %}" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea marcar esta factura como borrador?')">Marcar como Borrador</a>
+                    <a href="{% url 'factura:marcar_como_borrador' factura.id %}" class="btn btn-warning" onclick="return confirm('¿Está seguro de que desea marcar esta factura como borrador?')">Marcar como Borrador</a>
                 {% endif %}
             </div>
         </div>

@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.core.validators import MinValueValidator
 from decimal import Decimal
 
@@ -60,6 +61,12 @@ class Factura(models.Model):
         if self.estado in ['EMITIDA', 'PAGADA', 'ANULADA']:
             self.estado = 'BORRADOR'
             self.save()
+
+    def get_absolute_url(self):
+        return reverse("factura:factura_detail", kwargs={"pk": self.pk})
+    
+    def generar_pdf(self):
+        return reverse("factura:factura_pdf", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"Factura {self.numero} - {self.contrato}"

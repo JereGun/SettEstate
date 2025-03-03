@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura {{ factura.numero }}</title>
+    
+    <!--Marca de Agua para facturas anuladas -->
+    {% if factura.estado == 'ANULADA' %}
+    <style>
+        body::before {
+            content: "ANULADA";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            color: rgba(255, 0, 0, 0.2);
+            z-index: -1;
+        }
+    </style>
+    {% endif %}
+    
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        a {
+            color: #5D6975;
+            text-decoration: underline;
+        }
+
+        body {
+            position: relative;
+            color: #001028;
+            background: #FFFFFF; 
+            font-family: Arial, sans-serif; 
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+
+        #logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #logo img {
+            width: 90px;
+            max-height: 80px;
+        }
+
+        h1 {
+            border-top: 1px solid #5D6975;
+            border-bottom: 1px solid #5D6975;
+            color: #5D6975;
+            font-size: 2em;
+            line-height: 1.4em;
+            font-weight: normal;
+            text-align: center;
+            margin: 0 0 15px 0;
+        }
+
+        #project {
+            float: left;
+            width: 55%;
+        }
+
+        #project span {
+            color: #5D6975;
+            text-align: right;
+            width: 90px;
+            margin-right: 10px;
+            display: inline-block;
+            font-size: 0.8em;
+        }
+
+        #company {
+            float: right;
+            text-align: right;
+            width: 40%;
+        }
+
+        #project div,
+        #company div {
+            white-space: nowrap;
+            margin-bottom: 3px;
+            font-size: 11px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 20px;
+            page-break-inside: auto;
+        }
+
+        table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        table tr:nth-child(2n-1) td {
+            background: #F5F5F5;
+        }
+
+        table th,
+        table td {
+            text-align: center;
+            font-size: 11px;
+        }
+
+        table th {
+            padding: 5px 10px;
+            color: #5D6975;
+            border-bottom: 1px solid #C1CED9;
+            white-space: nowrap;        
+            font-weight: normal;
+        }
+
+        table .service,
+        table .desc {
+            text-align: left;
+        }
+
+        table td {
+            padding: 8px 10px;
+            text-align: right;
+        }
+
+        table td.service,
+        table td.desc {
+            vertical-align: top;
+        }
+
+        table td.desc {
+            max-width: 250px;
+            word-wrap: break-word;
+        }
+
+        table td.unit,
+        table td.total {
+            font-size: 1.1em;
+        }
+
+        table td.grand {
+            border-top: 1px solid #5D6975;
+        }
+
+        #notices {
+            color: #5D6975;
+            font-size: 1.1em;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        #notices .notice {
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        footer {
+            color: #5D6975;
+            width: 100%;
+            height: 30px;
+            position: fixed;
+            bottom: 0;
+            border-top: 1px solid #C1CED9;
+            padding: 8px 0;
+            text-align: center;
+            font-size: 10px;
+        }
+        
+        main {
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header class="clearfix">
+        <div id="logo">
+            {% if empresa.logo %}
+            <img src="media/empresa/logo/logo.png" alt="Logo de la empresa">
+            {% endif %}
+        </div>
+        <h1>FACTURA {{ factura.numero }}</h1>
+        <div id="company" class="clearfix">
+            <div><strong>{{ empresa.nombre }}</strong></div>
+            <div>{{ empresa.direccion }}</div>
+            <div>{{ empresa.ciudad }}, {{ empresa.provincia }} {{ empresa.codigo_postal }}</div>
+            <div>CUIT: {{ empresa.cuit }}</div>
+            <div>Tel: {{ empresa.telefono }}</div>
+            <div><a href="mailto:{{ empresa.email }}">{{ empresa.email }}</a></div>
+        </div>
+        <div id="project">
+            <div><span>INQUILINO</span> {{ factura.contrato.inquilino.nombre }} {{ factura.contrato.inquilino.apellido }}</div>
+            <div><span>DNI/CUIT</span> {{ factura.contrato.inquilino.documento }}</div>
+            <div><span>DIRECCIÓN</span> {{ factura.contrato.inquilino.direccion }}</div>
+            <div><span>TELÉFONO</span> {{ factura.contrato.inquilino.telefono }}</div>
+            <div><span>EMAIL</span> <a href="mailto:{{ factura.contrato.inquilino.email }}">{{ factura.contrato.inquilino.email }}</a></div>
+            <div><span>PERÍODO</span> {{ factura.contrato.fecha_inicio }} al {{ factura.contrato.fecha_fin }}</div>
+            <div><span>FECHA EMISIÓN</span> {{ factura.fecha_emision }}</div>
+            <div><span>VENCIMIENTO</span> {{ factura.fecha_vencimiento }}</div>
+        </div>
+    </header>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th class="service">TIPO</th>
+                    <th class="desc">DESCRIPCIÓN</th>
+                    <th>MONTO</th>
+                    <th>SUBTOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in factura.items.all %}
+                <tr>
+                    <td class="service">{{ item.get_tipo_display }}</td>
+                    <td class="desc">{{ item.descripcion }}</td>
+                    <td class="unit">${{ item.monto }}</td>
+                    <td class="total">${{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3">SUBTOTAL</td>
+                    <td class="total">${{ factura.subtotal }}</td>
+                </tr>
+                {% if factura.impuestos %}
+                <tr>
+                    <td colspan="3">IMPUESTOS</td>
+                    <td class="total">${{ factura.impuestos }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td colspan="3" class="grand total">TOTAL</td>
+                    <td class="grand total">${{ factura.total }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="notices">
+            <div><strong>INFORMACIÓN DE PAGO:</strong></div>
+            <div class="notice">Métodos de pago aceptados: {{ empresa.metodos_pago }}</div>
+            <div class="notice">Cuenta bancaria: {{ empresa.cuenta_bancaria }}</div>
+            <div class="notice">CBU: {{ empresa.cbu }}</div>
+            <div class="notice">Alias: {{ empresa.alias }}</div>
+        </div>
+    </main>
+    <footer>
+        Este documento es una factura electrónica generada por el sistema.
+        {{ empresa.nombre }} - {{ empresa.cuit }} - {{ empresa.direccion }}, {{ empresa.ciudad }}, {{ empresa.provincia }}
+    </footer>
+</body>
+</html>
