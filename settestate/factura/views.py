@@ -136,11 +136,19 @@ def marcar_como_borrador(request, pk):
     return redirect('factura:factura_detail', pk=pk)
 
 def factura_pdf_view(request, pk):
+    
     """Vista para generar un PDF de la factura"""
     factura = get_object_or_404(Factura, pk=pk)
     
-    # Generar el PDF
-    pdf = render_to_pdf('factura/factura_pdf.html', {'factura': factura})
+    # Importar el modelo Empresa y obtener la instancia
+    from empresa.models import Empresa
+    empresa = Empresa.objects.first()
+    
+    # Generar el PDF incluyendo la empresa en el contexto
+    pdf = render_to_pdf('factura/factura_pdf.html', {
+        'factura': factura,
+        'empresa': empresa  # Añadir la empresa al contexto
+    })
     
     # Configurar la respuesta para descargar el archivo
     if pdf:
@@ -152,6 +160,7 @@ def factura_pdf_view(request, pk):
     
     # En caso de error
     return HttpResponse("Error al generar el PDF", status=400)
+
 
 # Vistas de ItemFactura
 class ItemFacturaCreateView(LoginRequiredMixin, CreateView):

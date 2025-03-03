@@ -18,13 +18,13 @@ class Empresa(models.Model):
     sitio_web = models.URLField(blank=True, null=True)
     
     # Información bancaria
-    metodos_pago = models.CharField(max_length=255, help_text="Métodos de pago aceptados, separados por comas")
+    metodos_pago = models.CharField(max_length=255, help_text="Métodos de pago aceptados, separados por comas", blank=True, null=True)
     cuenta_bancaria = models.CharField(max_length=100, blank=True, null=True)
     cbu = models.CharField(max_length=100, blank=True, null=True)
     alias = models.CharField(max_length=100, blank=True, null=True)
     
     # Logo de la empresa
-    logo = models.ImageField(upload_to='empresa/logos/', blank=True, null=True)
+    logo = models.ImageField(upload_to='media/empresa/logo/', blank=True, null=True)
     
     # Campos de auditoría
     creacion = models.DateTimeField(auto_now_add=True)
