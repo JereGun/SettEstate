@@ -1,8 +1,6 @@
-from django.http import JsonResponse
-from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.db import models
 from .models import Persona
 from .forms import PersonaForm
 
@@ -10,6 +8,44 @@ class PersonaListView(ListView):
     model = Persona
     template_name = 'persona/persona_list.html'
     context_object_name = 'personas'
+
+class PersonaListView(ListView):
+    model = Persona
+    template_name = 'persona/persona_list.html'
+    context_object_name = 'personas'
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get('search', '')
+        search_field = self.request.GET.get('field', 'all')
+        
+        if search_query:
+            if search_field == 'documento':
+                queryset = queryset.filter(documento__icontains=search_query)
+            elif search_field == 'nombre':
+                queryset = queryset.filter(nombre__icontains=search_query)
+            elif search_field == 'apellido':
+                queryset = queryset.filter(apellido__icontains=search_query)
+            elif search_field == 'email':
+                queryset = queryset.filter(email__icontains=search_query)
+            elif search_field == 'telefono':
+                queryset = queryset.filter(telefono__icontains=search_query)
+            else:  
+                queryset = queryset.filter(
+                    models.Q(documento__icontains=search_query) |
+                    models.Q(nombre__icontains=search_query) |
+                    models.Q(apellido__icontains=search_query) |
+                    models.Q(email__icontains=search_query) |
+                    models.Q(telefono__icontains=search_query)
+                )
+        
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('search', '')
+        context['search_field'] = self.request.GET.get('field', 'all')
+        return context
 
 class PersonaCreateView(CreateView):
     model = Persona
