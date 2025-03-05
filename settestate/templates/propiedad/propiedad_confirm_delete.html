@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Propiedad{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">Confirmar Eliminación</h3>
+                </div>
+                <div class="card-body">
+                    <p class="lead">¿Está seguro que desea eliminar la siguiente propiedad?</p>
+                    <div class="mb-3">
+                        <strong>{{ propiedad.nombre }}</strong>
+                        <p>{{ propiedad.tipo }} - {{ propiedad.alquiler_venta }}</p>
+                        <p>Dirección: {{ propiedad.calle }} {{ propiedad.numeracion }}, {{ propiedad.ciudad }}</p>
+                        {% if propiedad.dueño %}
+                        <p>Dueño: {{ propiedad.dueño.nombre }} {{ propiedad.dueño.apellido }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> Esta acción no se puede deshacer. Se eliminarán también todas las imágenes asociadas a esta propiedad.
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'propiedad_list' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
