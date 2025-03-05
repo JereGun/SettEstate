@@ -18,6 +18,7 @@ class ImagenPropiedad(models.Model):
         format='JPEG',
         options={'quality': 80}
     )
+    descripcion = models.TextField(null=True, blank=True)
     portada = models.BooleanField(default=False)
 
     class Meta:
