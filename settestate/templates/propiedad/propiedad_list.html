@@ -5,6 +5,31 @@
 {% block content %}
 <div class="container mt-4">
     <h1 class="mb-4">Lista de Propiedades</h1>
+        <!-- Formulario de búsqueda -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Buscar..." value="{{ search_query }}">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="field" class="form-select">
+                            <option value="all" {% if search_field == 'all' %}selected{% endif %}>Todos los campos</option>
+                            <option value="nombre" {% if search_field == 'nombre' %}selected{% endif %}>Nombre</option>
+                            <option value="dueño" {% if search_field == 'dueño' %}selected{% endif %}>Dueño</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="{% url 'propiedad_list' %}" class="btn btn-secondary w-100">Limpiar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     <a href="{% url 'propiedad_create' %}" class="btn btn-primary mb-3">
         <i class="fas fa-plus"></i> Crear Nueva Propiedad
     </a>
@@ -16,6 +41,7 @@
                     <th>Tipo</th>
                     <th>Transacción</th>
                     <th>Precio</th>
+                    <th>Dueño</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -26,6 +52,7 @@
                     <td>{{ propiedad.tipo }}</td>
                     <td>{{ propiedad.alquiler_venta }}</td>
                     <td>${{ propiedad.precio }}</td>
+                    <td>{{ propiedad.dueño.nombre}} {{ propiedad.dueño.apellido }}</td>
                     <td>
                         <a href="{% url 'propiedad_editar' propiedad.pk %}" class="btn btn-sm btn-warning">
                             <i class="fas fa-edit"></i> Editar
