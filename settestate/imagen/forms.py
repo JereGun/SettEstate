@@ -5,7 +5,7 @@ from .models import ImagenPropiedad
 
 class ImagenPropiedadForm(forms.ModelForm):
     class Meta:
-        model = ImagenPropiedad()
+        model = ImagenPropiedad
         fields = ['imagen', 'descripcion', 'portada']
         widgets = {
             'descripcion': forms.TextInput(attrs={'placeholder': 'Breve descripción de la imagen'}),

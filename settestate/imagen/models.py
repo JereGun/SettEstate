@@ -34,6 +34,11 @@ class ImagenPropiedad(models.Model):
                 raise ValidationError('Ya existe una imagen marcada como portada para esta propiedad')
 
     def save(self, *args, **kwargs):
+        is_first_image = not ImagenPropiedad.objects.filter(propiedad=self.propiedad).exists()
+
+        if is_first_image:
+            self.portada = True
+
         self.clean()
         super().save(*args, **kwargs)
 
@@ -42,3 +47,11 @@ def eliminar_imagen(sender, instance, **kwargs):
     if instance.imagen:
         if os.path.isfile(instance.imagen.path):
             os.remove(instance.imagen.path)
+
+@receiver(post_delete, sender=ImagenPropiedad)
+def asignar_nueva_portada(sender, instance, **kwargs):
+    if instance.portada:
+        primera_imagen = ImagenPropiedad.objects.filter(propiedad=instance.propiedad).first()
+        if primera_imagen:
+            primera_imagen.portada = True
+            primera_imagen.save()

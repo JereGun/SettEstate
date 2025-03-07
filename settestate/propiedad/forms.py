@@ -20,18 +20,13 @@ class PropiedadForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.form_class = 'form-horizontal'
         
-        # Organizar campos en pestañas para mejor organización
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Información Básica',
                     Fieldset('Datos generales',
                         Row(
-                            Column('nombre', css_class='col-md-6'),
+                            Column('denominacion', css_class='col-md-6'),
                             Column('tipo', css_class='col-md-6'),
-                        ),
-                        Row(
-                            Column('estado', css_class='col-md-6'),
-                            Column('propietario', css_class='col-md-6'),
                         ),
                         'descripcion',
                     ),
@@ -43,41 +38,47 @@ class PropiedadForm(forms.ModelForm):
                             Column('numeracion', css_class='col-md-4'),
                         ),
                         Row(
+                            Column('ciudad', css_class='col-md-6'),
+                            Column('provincia', css_class='col-md-6'),
+                        ),
+                        Row(
                             Column('piso', css_class='col-md-4'),
                             Column('departamento', css_class='col-md-4'),
                             Column('codigo_postal', css_class='col-md-4'),
                         ),
-                        Row(
-                            Column('ciudad', css_class='col-md-6'),
-                            Column('provincia', css_class='col-md-6'),
-                        ),
                     ),
                     HTML('<div class="mt-3 mb-3"><div id="map" style="height: 300px; width: 100%;"></div></div>'),
                 ),
-                Tab('Características',
-                    Fieldset('Detalles',
+                Tab('Datos de Contrato',
                         Row(
                             Column(PrependedText('precio', '$'), css_class='col-md-6'),
                             Column(AppendedText('superficie', 'm²'), css_class='col-md-6'),
                         ),
                         Row(
-                            Column('habitaciones', css_class='col-md-3'),
-                            Column('baños', css_class='col-md-3'),
-                            Column('cocheras', css_class='col-md-3'),
-                            Column('antiguedad', css_class='col-md-3'),
+                            Column('estado', css_class='col-md-6'),
+                            Column('propietario', css_class='col-md-6'),
                         ),
+                ),
+                Tab('Características',
+                    Fieldset('Detalles',
                         Row(
-                            Column('amueblada', css_class='col-md-4'),
-                            Column('balcon', css_class='col-md-4'),
-                            Column('terraza', css_class='col-md-4'),
+                            Column('dormitorios', css_class='col-md-4'),
+                            Column('ambientes', css_class='col-md-4'),
+                            Column('baños', css_class='col-md-4'),
+                            Column('cocheras', css_class='col-md-4'),
+                            Column('antiguedad', css_class='col-md-4'),
+                            Column('pisos', css_class='col-md-4'),
+                            Column('metros_cubiertos', css_class='col-md-4'),
+                            Column('metros_descubiertos', css_class='col-md-4'),
+                            Column('metros_totales', css_class='col-md-4'),
                         ),
                     ),
                 ),
                 Tab('Fechas y Documentación',
                     Fieldset('Control de fechas',
                         Row(
-                            Column('fecha_creacion', css_class='col-md-6'),
-                            Column('fecha_actualizacion', css_class='col-md-6'),
+                            Column('creacion', css_class='col-md-6'),
+                            Column('ultima_actualizacion', css_class='col-md-6'),
                         ),
                     ),
                     Fieldset('Documentación',

@@ -35,56 +35,213 @@
                     {% csrf_token %}
                     
                     <div class="card-body">
-                        {% crispy form %}
-                        
-                        <div class="border-top pt-4 mt-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="mb-0">
-                                    <i class="fas fa-images me-2"></i>
-                                    Imágenes de la Propiedad
-                                </h4>
-                                <button type="button" 
-                                        class="btn btn-sm btn-outline-primary" 
-                                        id="add-imagen">
-                                    <i class="fas fa-plus me-1"></i> Agregar Imagen
+                        <!-- Sistema de pestañas -->
+                        <ul class="nav nav-tabs" id="propiedadTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="info-basica-tab" data-bs-toggle="tab" data-bs-target="#info-basica" type="button" role="tab" aria-controls="info-basica" aria-selected="true">
+                                    <i class="fas fa-info-circle me-1"></i> Información Básica
                                 </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="ubicacion-tab" data-bs-toggle="tab" data-bs-target="#ubicacion" type="button" role="tab" aria-controls="ubicacion" aria-selected="false">
+                                    <i class="fas fa-map-marker-alt me-1"></i> Ubicación
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contrato-tab" data-bs-toggle="tab" data-bs-target="#contrato" type="button" role="tab" aria-controls="contrato" aria-selected="false">
+                                    <i class="fas fa-file-contract me-1"></i> Datos de Contrato
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="caracteristicas-tab" data-bs-toggle="tab" data-bs-target="#caracteristicas" type="button" role="tab" aria-controls="caracteristicas" aria-selected="false">
+                                    <i class="fas fa-list-ul me-1"></i> Características
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="imagenes-tab" data-bs-toggle="tab" data-bs-target="#imagenes" type="button" role="tab" aria-controls="imagenes" aria-selected="false">
+                                    <i class="fas fa-images me-1"></i> Imágenes
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <!-- Contenido de las pestañas -->
+                        <div class="tab-content pt-4" id="propiedadTabsContent">
+                            <!-- Información Básica -->
+                            <div class="tab-pane fade show active" id="info-basica" role="tabpanel" aria-labelledby="info-basica-tab">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form.denominacion|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.tipo|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-12">
+                                        {{ form.descripcion|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-12">
+                                        {{ form.dueño|as_crispy_field }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Fechas de creación y modificación -->
+                                {% if form.instance.pk %}
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Fecha de creación</label>
+                                            <input type="text" class="form-control" value="{{ form.instance.creacion|date:'d/m/Y H:i' }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Última actualización</label>
+                                            <input type="text" class="form-control" value="{{ form.instance.ultima_actualizacion|date:'d/m/Y H:i' }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
                             </div>
                             
-                            {{ formset.management_form }}
-                            <div id="imagenes-container" class="row g-3">
-                                {% for imagen_form in formset %}
-                                    <div class="col-md-12">
-                                        <div class="imagen-form card border-0 shadow-sm">
-                                            <div class="card-body">
-                                                <div class="row align-items-center">
-                                                    {% if imagen_form.instance.pk %}
-                                                    <div class="col-md-3">
-                                                        <div class="preview-container mb-2">
-                                                            <img src="{{ imagen_form.instance.imagen.url }}" 
-                                                                class="img-thumbnail" 
-                                                                style="max-height: 150px;">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-9">
-                                                    {% else %}
-                                                    <div class="col-md-12">
-                                                    {% endif %}
-                                                        {% crispy imagen_form %}
-                                                        
+                            <!-- Ubicación -->
+                            <div class="tab-pane fade" id="ubicacion" role="tabpanel" aria-labelledby="ubicacion-tab">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form.calle|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.numeracion|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.piso|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.departamento|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.barrio|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.ciudad|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.provincia|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.pais|as_crispy_field }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Mapa -->
+                                <div class="mt-4">
+                                    <label class="form-label">Ubicación en el mapa</label>
+                                    <div id="map" style="height: 300px;"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Datos de Contrato -->
+                            <div class="tab-pane fade" id="contrato" role="tabpanel" aria-labelledby="contrato-tab">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ form.disponible|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.alquiler_venta|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.precio_alquiler|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form.precio_venta|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Características -->
+                            <div class="tab-pane fade" id="caracteristicas" role="tabpanel" aria-labelledby="caracteristicas-tab">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {{ form.baños|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form.dormitorios|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form.ambientes|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form.cocheras|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form.pisos|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form.antiguedad|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form.metros_cubiertos|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form.metros_descubiertos|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form.metros_totales|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{ form.piscina|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Imágenes -->
+                            <div class="tab-pane fade" id="imagenes" role="tabpanel" aria-labelledby="imagenes-tab">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="mb-0">
+                                        <i class="fas fa-images me-2"></i>
+                                        Imágenes de la Propiedad
+                                    </h4>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-outline-primary" 
+                                            id="add-imagen">
+                                        <i class="fas fa-plus me-1"></i> Agregar Imagen
+                                    </button>
+                                </div>
+                                
+                                {{ formset.management_form }}
+                                <div id="imagenes-container" class="row g-3">
+                                    {% for imagen_form in formset %}
+                                        <div class="col-md-12">
+                                            <div class="imagen-form card border-0 shadow-sm">
+                                                <div class="card-body">
+                                                    <div class="row align-items-center">
                                                         {% if imagen_form.instance.pk %}
-                                                        <div class="form-check mt-2">
-                                                            {{ imagen_form.DELETE }}
-                                                            <label class="form-check-label text-danger">
-                                                                <i class="fas fa-trash-alt me-1"></i> Eliminar imagen
-                                                            </label>
+                                                        <div class="col-md-3">
+                                                            <div class="preview-container mb-2">
+                                                                <img src="{{ imagen_form.instance.imagen.url }}" 
+                                                                    class="img-thumbnail" 
+                                                                    style="max-height: 150px;">
+                                                            </div>
                                                         </div>
+                                                        <div class="col-md-9">
+                                                        {% else %}
+                                                        <div class="col-md-12">
                                                         {% endif %}
+                                                            {% crispy imagen_form %}
+                                                            
+                                                            {% if imagen_form.instance.pk %}
+                                                            <div class="form-check mt-2">
+                                                                {{ imagen_form.DELETE }}
+                                                                <label class="form-check-label text-danger">
+                                                                    <i class="fas fa-trash-alt me-1"></i> Eliminar imagen
+                                                                </label>
+                                                            </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                {% endfor %}
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -156,11 +313,22 @@
     }
     
     /* Estilos para las pestañas */
+    .nav-tabs {
+        border-bottom: 1px solid #dee2e6;
+    }
+    
     .nav-tabs .nav-link {
         border: none;
         color: #495057;
         font-weight: 500;
         padding: 1rem 1.5rem;
+        margin-bottom: -1px;
+        transition: all 0.2s ease;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: #3498db;
+        border-bottom: 3px solid #e9ecef;
     }
     
     .nav-tabs .nav-link.active {
@@ -218,6 +386,17 @@
         padding-bottom: 0.5rem;
         margin-bottom: 1rem;
     }
+    
+    /* Estilos para las fechas de creación/modificación */
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+        cursor: default;
+    }
+    
+    /* Animación para cambio de pestañas */
+    .tab-pane.fade {
+        transition: opacity 0.15s linear;
+    }
 </style>
 {% endblock %}
 
@@ -225,6 +404,45 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Manejo de pestañas
+    const triggerTabList = document.querySelectorAll('#propiedadTabs button');
+    triggerTabList.forEach(triggerEl => {
+        triggerEl.addEventListener('click', event => {
+            event.preventDefault();
+            const tab = new bootstrap.Tab(triggerEl);
+            tab.show();
+            
+            // Guardar la pestaña activa en localStorage
+            localStorage.setItem('activePropertyTab', triggerEl.getAttribute('id'));
+        });
+    });
+
+    // Restaurar la pestaña activa al cargar la página
+    const activeTab = localStorage.getItem('activePropertyTab');
+    if (activeTab) {
+        const tabToActivate = document.getElementById(activeTab);
+        if (tabToActivate) {
+            const tab = new bootstrap.Tab(tabToActivate);
+            tab.show();
+        }
+    }
+    
+    // Si hay errores en el formulario, activar la pestaña correspondiente
+    const formErrors = document.querySelectorAll('.is-invalid');
+    if (formErrors.length > 0) {
+        // Encontrar la pestaña que contiene el primer error
+        const firstError = formErrors[0];
+        const tabPane = firstError.closest('.tab-pane');
+        if (tabPane) {
+            const tabId = tabPane.id;
+            const tabToActivate = document.querySelector(`[data-bs-target="#${tabId}"]`);
+            if (tabToActivate) {
+                const tab = new bootstrap.Tab(tabToActivate);
+                tab.show();
+            }
+        }
+    }
+
     // Inicializar mapa si existe el elemento
     if (document.getElementById('map')) {
         const map = new google.maps.Map(document.getElementById('map'), {
