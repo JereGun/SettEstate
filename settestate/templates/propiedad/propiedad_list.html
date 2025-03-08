@@ -37,7 +37,7 @@
         <table class="table table-striped table-hover">
             <thead class="table-dark">
                 <tr>
-                    <th>Nombre</th>
+                    <th>Denominacion</th>
                     <th>Tipo</th>
                     <th>Transacción</th>
                     <th>Precio</th>
@@ -48,10 +48,10 @@
             <tbody>
                 {% for propiedad in propiedades %}
                 <tr>
-                    <td>{{ propiedad.nombre }}</td>
+                    <td>{{ propiedad.denominacion }}</td>
                     <td>{{ propiedad.tipo }}</td>
                     <td>{{ propiedad.alquiler_venta }}</td>
-                    <td>${{ propiedad.precio }}</td>
+                    <td>${{ propiedad.precio_alquiler }}</td>
                     <td>{{ propiedad.dueño.nombre}} {{ propiedad.dueño.apellido }}</td>
                     <td>
                         <a href="{% url 'propiedad_editar' propiedad.pk %}" class="btn btn-sm btn-warning">

@@ -29,7 +29,7 @@ class Contrato(models.Model):
 
     def __str__(self):
         """Unicode representation of Contrato."""
-        return f'Contrato de {self.propiedad.nombre} - {self.inquilino.nombre_completo()} - {self.fecha_inicio} hasta {self.fecha_fin}'
+        return f'Contrato de {self.propiedad.denominacion} - {self.inquilino.nombre_completo()} - {self.fecha_inicio} hasta {self.fecha_fin}'
     
     def get_monto_alquiler(self, fecha=None):
         """

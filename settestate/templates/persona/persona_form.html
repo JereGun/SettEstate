@@ -1,156 +1,444 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
 
-{% block title %}{% if object %}Editar{% else %}Crear{% endif %} Persona{% endblock %}
+{% block title %}{% if object %}Editar{% else %}Crear{% endif %} Persona - SettEstate{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4 text-center">{% if object %}Editar{% else %}Crear{% endif %} Persona</h1>
-    <form method="post" class="needs-validation" novalidate>
-        {% csrf_token %}
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="id_nombre" class="form-label fw-bold">Nombre</label>
-                            <input type="text" name="nombre" id="id_nombre" class="form-control" value="{{ form.nombre.value|default:'' }}" required>
-                            {% if form.nombre.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.nombre.errors|join:", " }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="id_apellido" class="form-label fw-bold">Apellido</label>
-                            <input type="text" name="apellido" id="id_apellido" class="form-control" value="{{ form.apellido.value|default:'' }}" required>
-                            {% if form.apellido.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.apellido.errors|join:", " }}
-                                </div>
-                            {% endif %}
-                        </div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'persona_list' %}">Personas</a></li>
+                    <li class="breadcrumb-item active">{% if object %}Editar{% else %}Crear{% endif %} Persona</li>
+                </ol>
+            </nav>
+
+            <!-- Card principal -->
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-gradient-primary-to-secondary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-user me-2"></i>
+                            {% if object %}Editar{% else %}Crear{% endif %} Persona
+                        </h3>
+                        {% if object %}
+                        <span class="badge bg-light text-dark">ID: {{ object.pk }}</span>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="id_documento" class="form-label fw-bold">Documento</label>
-                            <input type="text" name="documento" id="id_documento" class="form-control" value="{{ form.documento.value|default:'' }}" required>
-                            {% if form.documento.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.documento.errors|join:", " }}
+                
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="card-body">
+                        <!-- Sistema de pestañas -->
+                        <ul class="nav nav-tabs" id="personaTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="datos-personales-tab" data-bs-toggle="tab" data-bs-target="#datos-personales" type="button" role="tab" aria-controls="datos-personales" aria-selected="true">
+                                    <i class="fas fa-id-card me-1"></i> Datos Personales
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="ubicacion-tab" data-bs-toggle="tab" data-bs-target="#ubicacion" type="button" role="tab" aria-controls="ubicacion" aria-selected="false">
+                                    <i class="fas fa-map-marker-alt me-1"></i> Ubicación
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="contacto-tab" data-bs-toggle="tab" data-bs-target="#contacto" type="button" role="tab" aria-controls="contacto" aria-selected="false">
+                                    <i class="fas fa-phone me-1"></i> Contacto
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <!-- Contenido de las pestañas -->
+                        <div class="tab-content pt-4" id="personaTabsContent">
+                            <!-- Datos Personales -->
+                            <div class="tab-pane fade show active" id="datos-personales" role="tabpanel" aria-labelledby="datos-personales-tab">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="id_nombre" class="form-label fw-bold">Nombre</label>
+                                            <input type="text" name="nombre" id="id_nombre" class="form-control" value="{{ form.nombre.value|default:'' }}" required>
+                                            {% if form.nombre.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.nombre.errors|join:", " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="id_apellido" class="form-label fw-bold">Apellido</label>
+                                            <input type="text" name="apellido" id="id_apellido" class="form-control" value="{{ form.apellido.value|default:'' }}" required>
+                                            {% if form.apellido.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.apellido.errors|join:", " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
-                            {% endif %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="id_documento" class="form-label fw-bold">Documento</label>
+                                            <input type="text" name="documento" id="id_documento" class="form-control" value="{{ form.documento.value|default:'' }}" required>
+                                            {% if form.documento.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.documento.errors|join:", " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="id_fecha_nacimiento" class="form-label fw-bold">Fecha de Nacimiento</label>
+                                            <input type="date" name="fecha_nacimiento" id="id_fecha_nacimiento" class="form-control" value="{{ form.fecha_nacimiento.value|default:'' }}" required>
+                                            {% if form.fecha_nacimiento.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.fecha_nacimiento.errors|join:", " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Fechas de creación y modificación -->
+                                {% if object %}
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Fecha de creación</label>
+                                            <input type="text" class="form-control" value="{{ object.creacion|date:'d/m/Y H:i' }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Última actualización</label>
+                                            <input type="text" class="form-control" value="{{ object.ultima_actualizacion|date:'d/m/Y H:i' }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Ubicación -->
+                            <div class="tab-pane fade" id="ubicacion" role="tabpanel" aria-labelledby="ubicacion-tab">
+                                <div class="mb-3">
+                                    <label for="id_direccion" class="form-label fw-bold">Dirección</label>
+                                    <input type="text" name="direccion" id="id_direccion" class="form-control" value="{{ form.direccion.value|default:'' }}" required>
+                                    {% if form.direccion.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.direccion.errors|join:", " }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="id_pais" class="form-label fw-bold">País</label>
+                                            <select name="pais" id="id_pais" class="form-control" required>
+                                                <option value="">Seleccione un país</option>
+                                                {% for value, label in form.fields.pais.choices %}
+                                                    <option value="{{ value }}" {% if form.pais.value == value %}selected{% endif %}>{{ label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            {% if form.pais.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.pais.errors|join:", " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="id_provincia" class="form-label fw-bold">Provincia</label>
+                                            <select name="provincia" id="id_provincia" class="form-control" required>
+                                                <option value="">Seleccione una provincia</option>
+                                            </select>
+                                            {% if form.provincia.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.provincia.errors|join:", " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="id_ciudad" class="form-label fw-bold">Ciudad</label>
+                                            <select name="ciudad" id="id_ciudad" class="form-control" required>
+                                                <option value="">Seleccione una ciudad</option>
+                                            </select>
+                                            {% if form.ciudad.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.ciudad.errors|join:", " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mapa -->
+                                <div class="mt-4">
+                                    <label class="form-label fw-bold">Ubicación en el mapa</label>
+                                    <div id="map" style="height: 300px;"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Contacto -->
+                            <div class="tab-pane fade" id="contacto" role="tabpanel" aria-labelledby="contacto-tab">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="id_telefono" class="form-label fw-bold">Teléfono</label>
+                                            <input type="text" name="telefono" id="id_telefono" class="form-control" value="{{ form.telefono.value|default:'' }}" required>
+                                            {% if form.telefono.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.telefono.errors|join:", " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="id_email" class="form-label fw-bold">Email</label>
+                                            <input type="email" name="email" id="id_email" class="form-control" value="{{ form.email.value|default:'' }}" required>
+                                            {% if form.email.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.email.errors|join:", " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Espacio para información adicional de contacto -->
+                                <div class="mt-4">
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                <i class="fas fa-info-circle me-2 text-primary"></i>
+                                                Información adicional
+                                            </h5>
+                                            <p class="card-text">
+                                                Asegúrese de proporcionar información de contacto actualizada para facilitar la comunicación.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="id_fecha_nacimiento" class="form-label fw-bold">Fecha de Nacimiento</label>
-                            <input type="date" name="fecha_nacimiento" id="id_fecha_nacimiento" class="form-control" value="{{ form.fecha_nacimiento.value|default:'' }}" required>
-                            {% if form.fecha_nacimiento.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.fecha_nacimiento.errors|join:", " }}
-                                </div>
-                            {% endif %}
+                    
+                    <div class="card-footer bg-light">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'persona_list' %}" 
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>
+                                {% if object %}
+                                    Actualizar Persona
+                                {% else %}
+                                    Crear Persona
+                                {% endif %}
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div class="mb-3">
-                    <label for="id_direccion" class="form-label fw-bold">Dirección</label>
-                    <input type="text" name="direccion" id="id_direccion" class="form-control" value="{{ form.direccion.value|default:'' }}" required>
-                    {% if form.direccion.errors %}
-                        <div class="invalid-feedback d-block">
-                            {{ form.direccion.errors|join:", " }}
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="id_pais" class="form-label fw-bold">País</label>
-                            <select name="pais" id="id_pais" class="form-control" required>
-                                <option value="">Seleccione un país</option>
-                                {% for value, label in form.fields.pais.choices %}
-                                    <option value="{{ value }}" {% if form.pais.value == value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.pais.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.pais.errors|join:", " }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="id_provincia" class="form-label fw-bold">Provincia</label>
-                            <select name="provincia" id="id_provincia" class="form-control" required>
-                                <option value="">Seleccione una provincia</option>
-                            </select>
-                            {% if form.provincia.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.provincia.errors|join:", " }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="id_ciudad" class="form-label fw-bold">Ciudad</label>
-                            <select name="ciudad" id="id_ciudad" class="form-control" required>
-                                <option value="">Seleccione una ciudad</option>
-                            </select>
-                            {% if form.ciudad.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.ciudad.errors|join:", " }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="id_telefono" class="form-label fw-bold">Teléfono</label>
-                            <input type="text" name="telefono" id="id_telefono" class="form-control" value="{{ form.telefono.value|default:'' }}" required>
-                            {% if form.telefono.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.telefono.errors|join:", " }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="id_email" class="form-label fw-bold">Email</label>
-                            <input type="email" name="email" id="id_email" class="form-control" value="{{ form.email.value|default:'' }}" required>
-                            {% if form.email.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ form.email.errors|join:", " }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
+                </form>
+            </div>
+            
+            <!-- Tarjeta de ayuda -->
+            <div class="card mt-4 border-0 shadow-sm bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                        Consejos para completar el formulario
+                    </h5>
+                    <ul class="mb-0">
+                        <li>Complete todos los campos obligatorios marcados con un asterisco (*).</li>
+                        <li>Asegúrese de que el documento de identidad sea válido y esté en el formato correcto.</li>
+                        <li>Proporcione un correo electrónico válido para facilitar la comunicación.</li>
+                    </ul>
                 </div>
             </div>
         </div>
-
-        <!-- Botones de acción -->
-        <div class="mt-4 text-center">
-            <button type="submit" class="btn btn-primary btn-lg">
-                <i class="fas fa-save"></i> Guardar
-            </button>
-            <a href="{% url 'persona_list' %}" class="btn btn-secondary btn-lg">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
-        </div>
-    </form>
+    </div>
 </div>
 
+{% block extra_css %}
+<style>
+    /* Estilos para el formulario */
+    .bg-gradient-primary-to-secondary {
+        background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+    }
+    
+    .invalid-feedback {
+        display: block;
+    }
+    
+    /* Estilos para las pestañas */
+    .nav-tabs {
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .nav-tabs .nav-link {
+        border: none;
+        color: #495057;
+        font-weight: 500;
+        padding: 1rem 1.5rem;
+        margin-bottom: -1px;
+        transition: all 0.2s ease;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: #3498db;
+        border-bottom: 3px solid #e9ecef;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #3498db;
+        border-bottom: 3px solid #3498db;
+        background-color: transparent;
+    }
+    
+    .tab-content {
+        padding: 1.5rem 0;
+    }
+    
+    /* Mejoras para campos pequeños */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    /* Campos de tipo checkbox con mejor alineación */
+    .form-check {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+    
+    .form-check-input {
+        margin-top: 0;
+    }
+    
+    /* Animaciones */
+    .card, .btn {
+        transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Estilos para el mapa */
+    #map {
+        border-radius: 8px;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    /* Estilos para las fechas de creación/modificación */
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+        cursor: default;
+    }
+    
+    /* Animación para cambio de pestañas */
+    .tab-pane.fade {
+        transition: opacity 0.15s linear;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejo de pestañas
+    const triggerTabList = document.querySelectorAll('#personaTabs button');
+    triggerTabList.forEach(triggerEl => {
+        triggerEl.addEventListener('click', event => {
+            event.preventDefault();
+            const tab = new bootstrap.Tab(triggerEl);
+            tab.show();
+            
+            // Guardar la pestaña activa en localStorage
+            localStorage.setItem('activePersonaTab', triggerEl.getAttribute('id'));
+        });
+    });
+
+    // Restaurar la pestaña activa al cargar la página
+    const activeTab = localStorage.getItem('activePersonaTab');
+    if (activeTab) {
+        const tabToActivate = document.getElementById(activeTab);
+        if (tabToActivate) {
+            const tab = new bootstrap.Tab(tabToActivate);
+            tab.show();
+        }
+    }
+    
+    // Si hay errores en el formulario, activar la pestaña correspondiente
+    const formErrors = document.querySelectorAll('.invalid-feedback.d-block');
+    if (formErrors.length > 0) {
+        // Encontrar la pestaña que contiene el primer error
+        const firstError = formErrors[0];
+        const tabPane = firstError.closest('.tab-pane');
+        if (tabPane) {
+            const tabId = tabPane.id;
+            const tabToActivate = document.querySelector(`[data-bs-target="#${tabId}"]`);
+            if (tabToActivate) {
+                const tab = new bootstrap.Tab(tabToActivate);
+                tab.show();
+            }
+        }
+    }
+
+    // Inicializar mapa si existe el elemento
+    if (document.getElementById('map')) {
+        const map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: -34.603722, lng: -58.381592 }, // Buenos Aires por defecto
+            zoom: 13
+        });
+        
+        // Si hay dirección, intentar geocodificarla
+        const direccionInput = document.querySelector('input[name="direccion"]');
+        const ciudadSelect = document.getElementById('id_ciudad');
+        
+        if (direccionInput && ciudadSelect) {
+            const geocoder = new google.maps.Geocoder();
+            const updateMap = () => {
+                const direccion = direccionInput.value;
+                const ciudad = ciudadSelect.value;
+                
+                if (direccion && ciudad) {
+                    geocoder.geocode({ 'address': `${direccion}, ${ciudad}` }, function(results, status) {
+                        if (status === 'OK') {
+                            map.setCenter(results[0].geometry.location);
+                            new google.maps.Marker({
+                                map: map,
+                                position: results[0].geometry.location
+                            });
+                        }
+                    });
+                }
+            };
+            
+            // Actualizar mapa cuando cambian los campos
+            direccionInput.addEventListener('change', updateMap);
+            ciudadSelect.addEventListener('change', updateMap);
+            
+            // Intentar geocodificar dirección inicial
+            if (direccionInput.value && ciudadSelect.value) {
+                updateMap();
+            }
+        }
+    }
+
     // Obtener los elementos del formulario
     const paisSelect = document.getElementById('id_pais');
     const provinciaSelect = document.getElementById('id_provincia');
@@ -222,7 +510,17 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     }
+    
+    // Validación del formulario
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
 });
 </script>
-          
+{% endblock %}
 {% endblock %}
